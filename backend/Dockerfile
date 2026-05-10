@@ -1,24 +1,9 @@
 FROM node:20-alpine
-
-# Install OpenSSL and other dependencies
 RUN apk add --no-cache openssl
-
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy source code
+RUN npm config set fetch-retry-maxtimeout 600000 && \
+    npm install --no-audit --no-fund --legacy-peer-deps
 COPY . .
-
-# Generate Prisma client
-RUN npx prisma generate
-
-# Expose port
-EXPOSE 3001
-
-# Start the application
-CMD ["npm", "run", "dev"]
+EXPOSE 3000
+CMD ["npm", "start"]
